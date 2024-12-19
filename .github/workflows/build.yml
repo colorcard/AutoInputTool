@@ -7,15 +7,15 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch:  # 支持手动触发工作流
+  workflow_dispatch:  # 手动触发工作流
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # 在 Ubuntu 上构建
+    runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]  # 使用多个操作系统进行打包
+        os: [windows-latest, macos-latest]  # 在 Windows 和 macOS 系统中进行打包
 
     steps:
       # Checkout 代码
@@ -26,7 +26,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.12  # 使用 Python 3.12
+          python-version: 3.12
 
       # 安装依赖
       - name: Install dependencies
@@ -40,19 +40,19 @@ jobs:
           if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
             pip install pyinstaller
             pyinstaller --onefile --hidden-import pyautogui --noconsole auto_input_tool.py
-          elif [[ "${{ matrix.os }}" == "macos-latest" ]]; then
-            pip install pyinstaller
-            pyinstaller --onefile --hidden-import pyautogui --noconsole auto_input_tool.py
           else
             pip install pyinstaller
             pyinstaller --onefile --hidden-import pyautogui --noconsole auto_input_tool.py
           fi
 
-      # 上传生成的可执行文件到 GitHub
+      # 列出生成的文件
+      - name: List generated files
+        run: ls dist
+
+      # 上传生成的可执行文件
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v3  # 使用新的 v3 版本
+        uses: actions/upload-artifact@v3
         with:
           name: app
           path: |
-            dist/auto_input_tool.exe  # Windows 可执行文件
-            dist/auto_input_tool.app  # macOS 可执行文件
+            dist/*
