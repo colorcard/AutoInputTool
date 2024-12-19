@@ -7,7 +7,7 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch: #手动构建
+  workflow_dispatch:  # 支持手动触发工作流
 
 jobs:
   build:
@@ -15,7 +15,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]  # 使用 Ubuntu、Windows 和 macOS 三个平台进行打包
+        os: [ubuntu-latest, windows-latest, macos-latest]  # 使用多个操作系统进行打包
 
     steps:
       # Checkout 代码
@@ -50,7 +50,7 @@ jobs:
 
       # 上传生成的可执行文件到 GitHub
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3  # 使用新的 v3 版本
         with:
           name: app
           path: |
