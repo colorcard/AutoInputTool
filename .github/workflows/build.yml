@@ -1,58 +1,66 @@
-name: Build Python Application
+name: Build EXE and APP
 
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
-  workflow_dispatch:  # 手动触发工作流
+      - main  # 当代码推送到 main 分支时触发构建
+  workflow_dispatch:  # 允许手动触发
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        os: [windows-latest, macos-latest]  # 在 Windows 和 macOS 系统中进行打包
+  build_windows:
+    runs-on: windows-latest  # 使用 Windows 环境
 
     steps:
-      # Checkout 代码
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v3  # 检出代码
 
-      # 设置 Python 环境
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.12
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'  # 设置 Python 版本
 
-      # 安装依赖
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt  # 安装依赖
 
-      # 打包应用
-      - name: Build executable
-        run: |
-          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
-            pip install pyinstaller
-            pyinstaller --onefile --hidden-import pyautogui --noconsole auto_input_tool.py
-          else
-            pip install pyinstaller
-            pyinstaller --onefile --hidden-import pyautogui --noconsole auto_input_tool.py
-          fi
+    - name: Install PyInstaller
+      run: pip install pyinstaller  # 安装 PyInstaller
 
-      # 列出生成的文件
-      - name: List generated files
-        run: ls dist
+    - name: Build EXE for Windows
+      run: pyinstaller --onefile --hidden-import pyautogui --noconsole auto_input_tool.py  # 包含 pyautogui 模块
 
-      # 上传生成的可执行文件
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: app
-          path: |
-            dist/*
+    - name: Upload Windows EXE artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: auto-input-tool-exe
+        path: dist/auto_input_tool.exe  # 上传生成的 EXE 文件
+
+  build_macos:
+    runs-on: macos-latest  # 使用 macOS 环境
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3  # 检出代码
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'  # 设置 Python 版本
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt  # 安装依赖
+
+    - name: Install PyInstaller
+      run: pip install pyinstaller  # 安装 PyInstaller
+
+    - name: Build APP for macOS
+      run: pyinstaller --onefile --hidden-import pyautogui --windowed auto_input_tool.py  # 包含 pyautogui 模块
+
+    - name: Upload macOS APP artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: auto-input-tool-app
+        path: dist/auto_input_tool.app  # 上传生成的 macOS APP 文件
