@@ -16,6 +16,8 @@
 ## !! 面向小白 !!
 如果你不具备进行构建和运行Python脚本的能力，此工具也已经构建了现有的直接可执行程序，请在此进行下载 [Windows & macOS下载](https://github.com/ColorCard/AutoInputTool/releases/tag/%E6%AD%A3%E5%BC%8F%E7%89%88)。
 
+---
+
 ## 环境要求
 - Python 3.12 及以上版本
 - Tkinter：Python 自带的 GUI 库
