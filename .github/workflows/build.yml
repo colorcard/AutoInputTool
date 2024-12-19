@@ -1,0 +1,35 @@
+name: Build EXE
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  build:
+    runs-on: windows-latest  # 使用 Windows 环境
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'  # 使用 Python 3.12
+
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+
+    - name: Install PyInstaller
+      run: pip install pyinstaller
+
+    - name: Build EXE
+      run: pyinstaller --onefile --noconsole auto_input_tool.py
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: auto-input-tool-exe
+        path: dist/auto_input_tool.exe
