@@ -28,10 +28,10 @@ jobs:
       run: pip install pyinstaller  # 安装 PyInstaller
 
     - name: Build EXE for Windows
-      run: pyinstaller --onefile --hidden-import pyautogui --noconsole auto_input_tool.py  # 包含 pyautogui 模块
+      run: pyinstaller --onefile --hidden-import pynput --hidden-import pyperclip --noconsole auto_input_tool.py
 
     - name: Upload Windows EXE artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4  # 升级到 v4 版本
       with:
         name: auto-input-tool-exe
         path: dist/auto_input_tool.exe  # 上传生成的 EXE 文件
@@ -57,10 +57,10 @@ jobs:
       run: pip install pyinstaller  # 安装 PyInstaller
 
     - name: Build APP for macOS
-      run: pyinstaller --onefile --hidden-import pyautogui --windowed auto_input_tool.py  # 包含 pyautogui 模块
+      run: pyinstaller --onefile --hidden-import pynput --hidden-import pyperclip --windowed auto_input_tool.py
 
     - name: Upload macOS APP artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4  # 升级到 v4 版本
       with:
         name: auto-input-tool-app
         path: dist/auto_input_tool.app  # 上传生成的 macOS APP 文件
